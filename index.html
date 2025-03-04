@@ -59,17 +59,8 @@ body {
       const iframe = document.getElementById("output-iframe");
 
       if (url) {
-        // Custom proxy (Node.js example, server-side)
-        fetch('/proxy?url=' + encodeURIComponent(url)) // Send to your server.
-          .then(response => response.text())
-          .then(data => {
-            iframe.srcdoc = data; // Set the iframes content directly.
-            iframe.style.display = "block";
-          })
-          .catch(error => {
-            console.error('Error fetching proxied content:', error);
-            alert('Proxy error. Check console.');
-          });
+        iframe.src = '/proxy?url=' + encodeURIComponent(url);
+        iframe.style.display = "block";
       } else {
         alert("Please enter a URL.");
       }
@@ -85,6 +76,7 @@ body {
             console.error("Iframe origin check failed:", e);
         }
     };
+
   </script>
 </body>
 </html>

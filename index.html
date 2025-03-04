@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Unblocker Proxy</title>
+<style>
+body {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
+}
+
+#input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#url-input {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#unblock-button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#output-iframe {
+  width: 80%;
+  height: 600px;
+  border: 1px solid #ccc;
+  display: none;
+}
+</style>
+</head>
+<body>
+  <div id="input-container">
+    <input type="text" id="url-input" placeholder="Enter URL to unblock">
+    <button id="unblock-button">Unblock</button>
+  </div>
+  <iframe id="output-iframe"></iframe>
+
+  <script>
+    document.getElementById("unblock-button").addEventListener("click", function() {
+      const url = document.getElementById("url-input").value;
+      const iframe = document.getElementById("output-iframe");
+
+      if (url) {
+        // Custom proxy (Node.js example, server-side)
+        fetch('/proxy?url=' + encodeURIComponent(url)) // Send to your server.
+          .then(response => response.text())
+          .then(data => {
+            iframe.srcdoc = data; // Set the iframes content directly.
+            iframe.style.display = "block";
+          })
+          .catch(error => {
+            console.error('Error fetching proxied content:', error);
+            alert('Proxy error. Check console.');
+          });
+      } else {
+        alert("Please enter a URL.");
+      }
+    });
+
+    //Prevent Iframe hijacking
+    document.getElementById("output-iframe").onload = function() {
+        try {
+            if(window.location.origin !== this.contentWindow.location.origin){
+                this.contentWindow.document.body.style.backgroundColor = 'white';
+            }
+        } catch (e) {
+            console.error("Iframe origin check failed:", e);
+        }
+    };
+  </script>
+</body>
+</html>

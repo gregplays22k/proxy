@@ -11,16 +11,8 @@ const server = http.createServer((req, res) => {
     const protocol = targetParsedUrl.protocol === 'https:' ? https : http;
 
     protocol.get(targetUrl, (targetRes) => {
-      let data = '';
-
-      targetRes.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      targetRes.on('end', () => {
-        res.writeHead(200, { 'Content-Type': 'text/html' }); // Adjust content type if needed
-        res.end(data);
-      });
+      res.writeHead(targetRes.statusCode, targetRes.headers); // Forward headers
+      targetRes.pipe(res); // Pipe the response directly
     }).on('error', (error) => {
       console.error('Proxy error:', error);
       res.writeHead(500, { 'Content-Type': 'text/plain' });
